@@ -19,9 +19,20 @@ import ssl
 # ─── Config ───────────────────────────────────────────────────────────
 CLIENT_ID = "a274ed5e-7692-42c7-9abd-4fc5fe82820e"
 REDIRECT_URI = "http://localhost:8089/callback"
-FHIR_BASE = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
-AUTH_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize"
-TOKEN_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
+
+# Toggle between sandbox and production
+USE_PRODUCTION = True
+
+if USE_PRODUCTION:
+    # Houston Methodist
+    FHIR_BASE = "https://epicproxy.et0922.epichosted.com/FHIRProxy/api/FHIR/R4"
+    AUTH_URL = "https://epicproxy.et0922.epichosted.com/FHIRProxy/oauth2/authorize"
+    TOKEN_URL = "https://epicproxy.et0922.epichosted.com/FHIRProxy/oauth2/token"
+else:
+    # Epic Sandbox
+    FHIR_BASE = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
+    AUTH_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize"
+    TOKEN_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
 
 SCOPES = " ".join([
     "openid",
@@ -98,12 +109,20 @@ def main():
     full_auth_url = f"{AUTH_URL}?{auth_params}"
 
     print("=" * 60)
-    print("Epic FHIR Sandbox Test")
+    env = "PRODUCTION (Houston Methodist)" if USE_PRODUCTION else "SANDBOX"
+    print(f"Epic FHIR Test — {env}")
     print("=" * 60)
     print(f"\nClient ID: {CLIENT_ID}")
     print(f"\nOpen this URL in your browser to authenticate:\n")
     print(full_auth_url)
     print(f"\nWaiting for callback on {REDIRECT_URI}...")
+
+    # Try to auto-open browser
+    try:
+        webbrowser.open(full_auth_url)
+        print("(Browser should have opened automatically)")
+    except:
+        print("(Copy the URL above and paste into your browser)")
 
     # 3. Wait for OAuth callback
     server_done.wait(timeout=300)
