@@ -18,19 +18,20 @@ import threading
 import ssl
 
 # ─── Config ───────────────────────────────────────────────────────────
-CLIENT_ID = "a274ed5e-7692-42c7-9abd-4fc5fe82820e"
 REDIRECT_URI = "https://localhost:8080/callback"
 
 # Toggle between sandbox and production
 USE_PRODUCTION = True
 
 if USE_PRODUCTION:
-    # Houston Methodist
+    # Houston Methodist — Production
+    CLIENT_ID = "085bb668-d550-4aae-a59b-e5cb4893c369"
     FHIR_BASE = "https://epicproxy.et0922.epichosted.com/FHIRProxy/api/FHIR/R4"
     AUTH_URL = "https://epicproxy.et0922.epichosted.com/FHIRProxy/oauth2/authorize"
     TOKEN_URL = "https://epicproxy.et0922.epichosted.com/FHIRProxy/oauth2/token"
 else:
-    # Epic Sandbox
+    # Epic Sandbox — Non-Production
+    CLIENT_ID = "c119e8db-e834-4b09-ba6e-39629e46dd51"
     FHIR_BASE = "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/R4"
     AUTH_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/authorize"
     TOKEN_URL = "https://fhir.epic.com/interconnect-fhir-oauth/oauth2/token"
