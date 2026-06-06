@@ -9,6 +9,7 @@ Usage: python3 test_sandbox.py
 
 import http.server
 import json
+import os
 import sys
 import urllib.parse
 import urllib.request
@@ -18,7 +19,7 @@ import ssl
 
 # ─── Config ───────────────────────────────────────────────────────────
 CLIENT_ID = "a274ed5e-7692-42c7-9abd-4fc5fe82820e"
-REDIRECT_URI = "http://localhost:8089/callback"
+REDIRECT_URI = "https://localhost:8080/callback"
 
 # Toggle between sandbox and production
 USE_PRODUCTION = True
@@ -93,8 +94,23 @@ def fhir_get(url, token):
 
 
 def main():
-    # 1. Start local callback server
-    server = http.server.HTTPServer(("localhost", 8089), CallbackHandler)
+    # 1. Start local HTTPS callback server (self-signed cert)
+    import tempfile, subprocess
+    cert_dir = tempfile.mkdtemp()
+    cert_file = os.path.join(cert_dir, "cert.pem")
+    key_file = os.path.join(cert_dir, "key.pem")
+    subprocess.run([
+        "openssl", "req", "-x509", "-newkey", "rsa:2048",
+        "-keyout", key_file, "-out", cert_file,
+        "-days", "1", "-nodes",
+        "-subj", "/CN=localhost"
+    ], capture_output=True)
+    print("Generated self-signed cert for localhost HTTPS")
+
+    server = http.server.HTTPServer(("localhost", 8080), CallbackHandler)
+    ctx_server = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx_server.load_cert_chain(cert_file, key_file)
+    server.socket = ctx_server.wrap_socket(server.socket, server_side=True)
     server_thread = threading.Thread(target=server.serve_forever, daemon=True)
     server_thread.start()
 
