@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyChart Health Export — Terms &amp; Conditions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 720px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 { color: #1a1a1a; border-bottom: 2px solid #0066cc; padding-bottom: 0.5rem; }
+        h2 { color: #0066cc; margin-top: 2rem; }
+        .updated { color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <h1>MyChart Health Export — Terms &amp; Conditions</h1>
+    <p class="updated">Last updated: June 6, 2026</p>
+
+    <h2>1. Purpose</h2>
+    <p>MyChart Health Export ("the App") is a personal-use application that allows an individual to export their own health records from Epic MyChart using the FHIR Patient Access API. This application is not intended for commercial use, clinical decision-making, or distribution to third parties.</p>
+
+    <h2>2. Data Handling</h2>
+    <ul>
+        <li><strong>Local storage only:</strong> All health data retrieved by the App is stored exclusively on the user's local device. No data is transmitted to, stored on, or processed by any external server.</li>
+        <li><strong>No third-party sharing:</strong> The App does not share, sell, license, or otherwise disclose any health data to any third party.</li>
+        <li><strong>No analytics or tracking:</strong> The App does not collect usage analytics, telemetry, or any form of behavioral tracking data.</li>
+    </ul>
+
+    <h2>3. Authentication</h2>
+    <p>The App uses the SMART on FHIR / OAuth 2.0 protocol to authenticate users via their existing MyChart credentials. The App does not store, log, or have access to MyChart usernames or passwords. Authentication tokens are stored locally and used solely to retrieve the user's own health records.</p>
+
+    <h2>4. Scope of Access</h2>
+    <p>The App requests read-only access to the user's health records, which may include:</p>
+    <ul>
+        <li>Patient demographics</li>
+        <li>Laboratory results and vitals</li>
+        <li>Medications and allergies</li>
+        <li>Conditions and diagnoses</li>
+        <li>Immunization records</li>
+        <li>Clinical notes and documents</li>
+        <li>Procedures and diagnostic reports</li>
+    </ul>
+    <p>The App does not write, modify, or delete any data in the user's medical record.</p>
+
+    <h2>5. Security</h2>
+    <p>The App follows industry-standard security practices for handling protected health information (PHI). Users are responsible for securing their own devices and any exported data files.</p>
+
+    <h2>6. Disclaimer</h2>
+    <p>This App is provided "as is" without warranty of any kind. The App is not a medical device and is not intended to diagnose, treat, cure, or prevent any disease. Health data retrieved by the App should not be used as a substitute for professional medical advice. Always consult a qualified healthcare provider for medical decisions.</p>
+
+    <h2>7. Contact</h2>
+    <p>For questions about these terms or the App's data practices, please open an issue on the <a href="https://github.com/clean-casey/mychart-export">GitHub repository</a>.</p>
+</body>
+</html>
