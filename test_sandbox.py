@@ -289,11 +289,49 @@ def main():
         print(f"  Error: {e}")
 
     print("\n" + "=" * 60)
-    print("✅ Sandbox test complete!")
+    print("✅ Data pull complete!")
     print("=" * 60)
 
-    # Save raw token info for reference
-    print(f"\n📋 Token details saved. Your app client ID {CLIENT_ID} is working.")
+    # Save all raw FHIR data to JSON file
+    export = {
+        "exported_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "fhir_base": FHIR_BASE,
+        "patient_id": patient_id,
+        "token_expires_in": token_resp.get("expires_in"),
+        "scopes_granted": token_resp.get("scope"),
+        "data": {}
+    }
+
+    # Re-pull everything and save raw FHIR JSON
+    endpoints = {
+        "patient": f"{FHIR_BASE}/Patient/{patient_id}",
+        "observations_lab": f"{FHIR_BASE}/Observation?patient={patient_id}&category=laboratory&_count=100",
+        "observations_vital": f"{FHIR_BASE}/Observation?patient={patient_id}&category=vital-signs&_count=100",
+        "conditions": f"{FHIR_BASE}/Condition?patient={patient_id}&_count=100",
+        "medications": f"{FHIR_BASE}/MedicationRequest?patient={patient_id}&_count=100",
+        "allergies": f"{FHIR_BASE}/AllergyIntolerance?patient={patient_id}&_count=100",
+        "immunizations": f"{FHIR_BASE}/Immunization?patient={patient_id}&_count=100",
+        "procedures": f"{FHIR_BASE}/Procedure?patient={patient_id}&_count=100",
+        "diagnostic_reports": f"{FHIR_BASE}/DiagnosticReport?patient={patient_id}&_count=100",
+        "documents": f"{FHIR_BASE}/DocumentReference?patient={patient_id}&_count=100",
+    }
+
+    for name, url in endpoints.items():
+        try:
+            print(f"  Fetching {name}...")
+            export["data"][name] = fhir_get(url, access_token)
+        except Exception as e:
+            export["data"][name] = {"error": str(e)}
+            print(f"  ⚠️  {name}: {e}")
+
+    export_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mychart_export.json")
+    with open(export_file, "w") as f:
+        json.dump(export, f, indent=2)
+
+    print(f"\n📁 Full FHIR data saved to: {export_file}")
+    print(f"   File size: {os.path.getsize(export_file) / 1024:.1f} KB")
+    print(f"\n📋 Your app client ID {CLIENT_ID} is working.")
+    print(f"\nShare mychart_export.json with Enrique if you want health data analysis.")
 
 
 if __name__ == "__main__":
